@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "master", "develop", "dev"]
+  pull_request:
+    branches: ["main", "master", "develop", "dev"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.2'
+          channel: 'stable'
+      - run: flutter --version
+
+      - name: Clean project
+        run: flutter clean
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # - name: Flutter test
+      #   run: flutter test
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze project
+        run: dart analyze --fatal-infos --fatal-warnings
+
+      # - name: Build Android
+      #   run: flutter build appbundle --release
+
+      # - name: Build iOS
+      #   run: flutter build ios --release
